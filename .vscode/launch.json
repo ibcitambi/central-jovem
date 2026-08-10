@@ -1,0 +1,37 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Start Vite Server",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": ["run", "dev", "--", "--host", "localhost", "--port", "5173"],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen"
+		},
+		{
+			"name": "Attach Chrome Debugger",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:5173/central-jovem/",
+			"webRoot": "${workspaceFolder}",
+			"sourceMaps": true,
+			"sourceMapPathOverrides": {
+				"/@fs/*": "/*",
+				"/@/*": "${webRoot}/src/*",
+				"/src/*": "${webRoot}/src/*"
+			},
+			"userDataDir": "${workspaceFolder}/.vscode/chrome-debug-user-data",
+			"skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+		}
+	],
+	"compounds": [
+		{
+			"name": "Debug Central Jovem",
+			"configurations": ["Start Vite Server", "Attach Chrome Debugger"],
+			"stopAll": true
+		}
+	]
+}

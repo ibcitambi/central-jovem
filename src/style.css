@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cj-black: #050505;
+  --color-cj-ink: #0a0a0a;
+  --color-cj-blue: #0020a0;
+  --color-cj-red: #e00000;
+  --color-cj-yellow: #f5d90a;
+  --color-cj-muted: #a3a3a3;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply m-0 min-h-dvh bg-cj-black font-sans text-white;
+  }
+
+  #app {
+    @apply min-h-dvh;
+  }
+}
