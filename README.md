@@ -21,18 +21,19 @@ npm run preview
 
 ## Deploy (GitHub Pages)
 
-O workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) publica automaticamente a pasta `dist/` em todo push em `main` (ou `master`).
+O workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) gera o `dist/` e publica na branch **`gh-pages`** a cada push em `main`.
 
-### Configuração única no GitHub
+### Configuração no GitHub (necessário uma vez)
 
-1. Abra o repositório: https://github.com/ibcitambi/central-jovem
-2. **Settings → Pages**
-3. Em **Build and deployment → Source**, escolha **GitHub Actions**
-4. Faça push deste projeto na branch `main` (ou rode o workflow manualmente em **Actions → Deploy GitHub Pages → Run workflow**)
+1. Abra: https://github.com/ibcitambi/central-jovem/settings/pages
+2. **Build and deployment → Source:** `Deploy from a branch`
+3. **Branch:** `gh-pages` / `/ (root)` → **Save**
 
-URL esperada: `https://ibcitambi.github.io/central-jovem/`
+URL: `https://ibcitambi.github.io/central-jovem/`
 
 O `base` do Vite está em `/central-jovem/` ([`vite.config.js`](vite.config.js)).
+
+> Não use a branch `main` como origem do Pages — ela tem o código-fonte Vue, não o site compilado.
 
 ## Conteúdo atual
 
