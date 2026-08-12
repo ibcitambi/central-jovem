@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opção D — Script Elegante</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Serif+4:ital@1&family=Caveat:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cjblack: '#050505', cjblue: '#0020a0', cjred: '#e00000', cjyellow: '#f5d90a', cjmuted: '#a3a3a3' },
+          fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['"Source Serif 4"', 'serif'], script: ['Caveat', 'cursive'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ---------------------------------------------------------------
+     Todo tamanho/espaçamento do cartaz vive aqui, por #id, de propósito:
+     abra o DevTools (F12), selecione o elemento e ajuste os valores
+     abaixo ao vivo. Unidade cqw = % da largura do próprio cartaz
+     (funciona em qualquer tamanho de tela).
+  ----------------------------------------------------------------*/
+
+    #poster {
+      container-type: inline-size;
+    }
+
+    #bg-photo {
+      background-image: url("https://images.pexels.com/photos/18100820/pexels-photo-18100820.jpeg?auto=compress&cs=tinysrgb&w=1400");
+      background-repeat: no-repeat;
+      background-size: 340% auto;
+      background-position: 50% 78%;
+      filter: grayscale(1) brightness(0.5) contrast(1.15) sepia(0.08);
+    }
+
+    .montage {
+      -webkit-mask-image: radial-gradient(ellipse 56% 50% at 50% 42%, black 40%, transparent 78%);
+      mask-image: radial-gradient(ellipse 56% 50% at 50% 42%, black 40%, transparent 78%);
+    }
+
+    #logo {
+      width: 41cqw;
+      margin-top: -33px;
+    }
+
+    #eyebrow {
+      font-size: 2.8cqw;
+      letter-spacing: 0.35em;
+    }
+
+    #hero-title {
+      font-size: 24cqw;
+      margin-top: 1cqw;
+    }
+
+    #scripture-text {
+      font-size: 4.7cqw;
+      font-weight: 500;
+      margin-top: 1.6cqw;
+    }
+
+    #scripture-ref {
+      font-size: 2.25cqw;
+      margin-top: 1cqw;
+    }
+
+    #info-seminarist {
+      font-size: 2.3cqw;
+      padding-top: 4cqw;
+      letter-spacing: 0.08em;
+    }
+
+    #date-block {
+      margin-top: 1.8cqw;
+    }
+
+    #date-main {
+      font-size: 5.6cqw;
+    }
+
+    #date-sub {
+      font-size: 2.4cqw;
+      margin-top: 0.5cqw;
+      letter-spacing: 0.22em;
+    }
+
+    #info-church {
+      font-size: 2.5cqw;
+      margin-top: 2.6cqw;
+    }
+
+    #info-address {
+      font-size: 2.15cqw;
+      margin-top: 0.5cqw;
+    }
+  </style>
+</head>
+
+<body class="bg-neutral-900 font-sans">
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <p class="text-cjyellow text-xs font-bold tracking-[0.3em] uppercase mb-1">Opção D · Script Elegante</p>
+    <p class="text-cjmuted text-xs mb-6">Fundo trocado pra foto da Opção E (mãos erguidas), reposicionada mais pra baixo
+      pra não brigar com a montagem. Rodapé com data mais dinâmica. Tamanhos editáveis por #id no &lt;style&gt; acima.
+    </p>
+
+    <div id="poster" class="relative w-full max-w-lg mx-auto aspect-[1080/1920] overflow-hidden bg-cjblack shadow-2xl">
+      <div id="bg-photo" class="absolute inset-0"></div>
+
+      <div id="montage-layer" class="montage absolute inset-x-0 top-0 h-[64%]">
+        <img id="montage-photo" src="./jovens.jpeg" alt="" aria-hidden="true"
+          class="w-full h-full object-cover object-[center_78%] grayscale contrast-110 sepia-[0.2] brightness-[0.85]" />
+      </div>
+
+      <div id="overlay-vertical" class="absolute inset-0 bg-gradient-to-b from-cjblack/40 via-cjblack/50 to-cjblack">
+      </div>
+      <div id="overlay-horizontal"
+        class="absolute inset-0 bg-gradient-to-r from-cjblack/55 via-transparent to-cjblack/55"></div>
+
+      <div id="content" class="relative z-10 h-full flex flex-col items-center text-center p-[6.5cqw]">
+        <img id="logo" src="../public/LogoCentralJovem.svg" alt="Central Jovem"
+          class="h-auto drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]" />
+
+        <p id="eyebrow" class="mt-auto text-cjyellow font-bold uppercase">Culto de Jovens</p>
+
+        <h2 id="hero-title" class="font-script text-white leading-[0.85] drop-shadow-[0_6px_20px_rgba(0,0,0,0.75)]">
+          Constantes</h2>
+
+        <p id="scripture-text" class="font-serif italic text-white/90 leading-snug max-w-[26ch]">&ldquo;Sede firmes e
+          constantes, sempre abundantes na obra do Senhor.&rdquo;</p>
+        <p id="scripture-ref" class="text-cjyellow/90 tracking-[0.15em] uppercase font-semibold">1 Coríntios 15:58</p>
+
+        <div id="info-seminarist" class="mt-auto text-white font-medium">Seminarista Renan Farias</div>
+
+        <div id="date-block" class="flex flex-col items-center">
+          <div id="date-main" class="text-white font-extrabold tracking-tight">16 de Agosto</div>
+          <div id="date-sub" class="text-cjyellow uppercase font-semibold">Domingo · 18h</div>
+        </div>
+
+        <div id="info-church" class="text-white font-semibold">Igreja Batista Central em Itambi</div>
+        <div id="info-address" class="text-cjmuted">Rua 10, próx. ao CIEP 451, Itambi</div>
+      </div>
+    </div>
+
+    <p class="text-cjmuted text-xs mt-3 text-center">Fundo: Caleb Oquendo / Pexels (licença livre) · Montagem: foto dos
+      jovens (jovens.jpeg)</p>
+  </main>
+</body>
+
+</html>
