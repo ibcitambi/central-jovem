@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Opção E — Efeito Eco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800;900&family=Source+Serif+4:ital@1&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { cjblack:'#050505', cjblue:'#0020a0', cjred:'#e00000', cjyellow:'#f5d90a', cjmuted:'#a3a3a3' },
+      fontFamily: { sans:['Outfit','sans-serif'], serif:['"Source Serif 4"','serif'] }
+    } }
+  }
+</script>
+</head>
+<body class="bg-neutral-900 font-sans">
+  <main class="max-w-3xl mx-auto px-6 py-8">
+    <p class="text-cjyellow text-xs font-bold tracking-[0.3em] uppercase mb-1">Opção E · Efeito Eco</p>
+    <p class="text-cjmuted text-xs mb-6">"CULTO" empilhado com opacidade decrescente atrás de "JOVEM" em vermelho — caminho Geração Forte.</p>
+
+    <div class="relative w-full max-w-sm mx-auto aspect-[1080/1920] overflow-hidden bg-cjblack shadow-2xl [container-type:inline-size]">
+      <img src="https://images.pexels.com/photos/18100820/pexels-photo-18100820.jpeg?auto=compress&cs=tinysrgb&w=1200"
+           alt="" aria-hidden="true"
+           class="absolute inset-0 w-full h-full object-cover grayscale brightness-[0.4] blur-[3px] scale-105" />
+      <div class="absolute inset-0 bg-gradient-to-b from-cjblack/80 via-cjblack/45 to-cjblack"></div>
+
+      <div class="relative z-10 h-full flex flex-col items-center text-center p-[6.5cqw]">
+        <div class="flex items-center gap-[1.5cqw] text-white/85 text-[1.85cqw] font-semibold tracking-[0.2em] uppercase">
+          <img src="../public/logoIBCI.png" alt="" class="w-[3.6cqw] h-auto" aria-hidden="true" />
+          Igreja Batista Central em Itambi
+        </div>
+
+        <div class="mt-auto leading-[0.82]">
+          <p class="text-white/10 text-[13cqw] font-black uppercase tracking-tight">Culto</p>
+          <p class="text-white/20 text-[13cqw] font-black uppercase tracking-tight -mt-[3.5cqw]">Culto</p>
+          <p class="text-white/35 text-[13cqw] font-black uppercase tracking-tight -mt-[3.5cqw]">Culto</p>
+          <p class="text-cjred text-[16cqw] font-black uppercase tracking-tight -mt-[4cqw]">Jovem</p>
+        </div>
+
+        <p class="mt-[3cqw] text-cjyellow text-[2.4cqw] font-bold tracking-[0.25em] uppercase">Tema: Constantes</p>
+        <p class="mt-[2.5cqw] font-serif italic text-white/85 text-[2.9cqw] leading-snug max-w-[26ch]">&ldquo;Sede firmes e constantes, sempre abundantes na obra do Senhor.&rdquo;</p>
+        <p class="mt-[0.8cqw] text-cjmuted text-[2.04cqw]">1 Coríntios 15:58</p>
+
+        <div class="mt-auto pt-[3.5cqw] text-white text-[2.22cqw] font-semibold">16/08 · Domingo · 18h</div>
+        <div class="text-cjmuted text-[2.04cqw] mt-[0.6cqw] leading-relaxed">
+          Rua 10, próx. ao CIEP 451, Itambi<br />Seminarista Renan Farias
+        </div>
+      </div>
+    </div>
+
+    <p class="text-cjmuted text-xs mt-3 text-center">Foto: Caleb Oquendo / Pexels (licença livre) — placeholder.</p>
+  </main>
+</body>
+</html>

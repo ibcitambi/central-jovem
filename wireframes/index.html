@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wireframes — Cartaz Culto de Jovens</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { cjblack:'#050505', cjblue:'#0020a0', cjred:'#e00000', cjyellow:'#f5d90a', cjmuted:'#a3a3a3' },
+      fontFamily: { sans:['Outfit','ui-sans-serif','sans-serif'] }
+    } }
+  }
+</script>
+</head>
+<body class="bg-neutral-900 font-sans">
+  <main class="max-w-6xl mx-auto px-6 py-12">
+    <p class="text-cjyellow text-xs font-bold tracking-[0.3em] uppercase mb-2">Central Jovem · Direção de arte</p>
+    <h1 class="text-white text-3xl font-bold mb-3">Cartaz e posts do Culto de Jovens</h1>
+    <p class="text-cjmuted max-w-3xl mb-10 text-sm">A é o cartaz/story aprovado — congelado. B, C, D e E são 4 caminhos de post de feed (4:5), cada um seguindo uma das referências que vocês mandaram, com foto real de banco (licença livre) como placeholder.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div>
+        <span class="inline-block text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 mb-2 bg-cjyellow/10 text-cjyellow border border-cjyellow/40">Aprovada · congelada</span>
+        <h2 class="text-white font-semibold mb-1">A · Clean</h2>
+        <p class="text-cjmuted text-xs mb-3">Story 9:16 — não mexer mais.</p>
+        <iframe src="./opcao-a-selo-assinatura.html" class="w-full aspect-[1080/1920] border border-white/10 bg-cjblack"></iframe>
+        <a href="./opcao-clean.jpg" target="_blank" class="text-cjyellow text-xs mt-2 inline-block hover:underline">Ver opcao-clean.jpg →</a>
+      </div>
+
+      <div>
+        <h2 class="text-white font-semibold mb-1">B · Duotone</h2>
+        <p class="text-cjmuted text-xs mb-3">Story 9:16 — foto duotone azul + título limpo.</p>
+        <iframe src="./opcao-b-duotone.html" class="w-full h-[700px] border border-white/10 bg-cjblack"></iframe>
+        <a href="./opcao-b-duotone.html" target="_blank" class="text-cjyellow text-xs mt-2 inline-block hover:underline">Abrir em nova aba →</a>
+      </div>
+
+      <div>
+        <h2 class="text-white font-semibold mb-1">C · Grunge</h2>
+        <p class="text-cjmuted text-xs mb-3">Story 9:16 — foto P&B + barra marcador + grão.</p>
+        <iframe src="./opcao-c-grunge.html" class="w-full h-[700px] border border-white/10 bg-cjblack"></iframe>
+        <a href="./opcao-c-grunge.html" target="_blank" class="text-cjyellow text-xs mt-2 inline-block hover:underline">Abrir em nova aba →</a>
+      </div>
+
+      <div>
+        <h2 class="text-white font-semibold mb-1">D · Script</h2>
+        <p class="text-cjmuted text-xs mb-3">Story 9:16 — retrato escuro + caligrafia elegante.</p>
+        <iframe src="./opcao-d-script.html" class="w-full h-[700px] border border-white/10 bg-cjblack"></iframe>
+        <a href="./opcao-d-script.html" target="_blank" class="text-cjyellow text-xs mt-2 inline-block hover:underline">Abrir em nova aba →</a>
+      </div>
+
+      <div>
+        <h2 class="text-white font-semibold mb-1">E · Eco</h2>
+        <p class="text-cjmuted text-xs mb-3">Story 9:16 — texto empilhado + foto desfocada.</p>
+        <iframe src="./opcao-e-eco.html" class="w-full h-[700px] border border-white/10 bg-cjblack"></iframe>
+        <a href="./opcao-e-eco.html" target="_blank" class="text-cjyellow text-xs mt-2 inline-block hover:underline">Abrir em nova aba →</a>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

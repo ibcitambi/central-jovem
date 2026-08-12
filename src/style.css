@@ -9,6 +9,7 @@
   --color-cj-muted: #a3a3a3;
   --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-script: "Caveat", cursive;
 }
 
 @layer base {
@@ -22,5 +23,93 @@
 
   #app {
     @apply min-h-dvh;
+  }
+}
+
+@layer components {
+  /* ----------------------------------------------------------------
+     EventPoster: same "locked artboard" technique as
+     wireframes/opcao-d-script.html — container-type + cqw units, so
+     it scales proportionally at any width instead of reflowing.
+  -------------------------------------------------------------------*/
+
+  .poster-frame {
+    container-type: inline-size;
+  }
+
+  .poster-bg {
+    background-size: cover;
+    background-position: center 75%;
+    filter: grayscale(1) brightness(0.5) contrast(1.15) sepia(0.08);
+  }
+
+  .poster-montage {
+    -webkit-mask-image: radial-gradient(ellipse 56% 50% at 50% 42%, black 40%, transparent 78%);
+    mask-image: radial-gradient(ellipse 56% 50% at 50% 42%, black 40%, transparent 78%);
+  }
+
+  .poster-montage-img {
+    background-size: cover;
+    background-position: center 78%;
+    filter: grayscale(1) brightness(0.85) contrast(1.1) sepia(0.2);
+  }
+
+  .poster-content {
+    padding: 6.5cqw;
+  }
+
+  .poster-logo {
+    width: 41cqw;
+    margin-top: -3cqw;
+  }
+
+  .poster-eyebrow {
+    font-size: 2.8cqw;
+    letter-spacing: 0.35em;
+  }
+
+  .poster-title {
+    font-size: 24cqw;
+    margin-top: 1cqw;
+  }
+
+  .poster-scripture {
+    font-size: 4.7cqw;
+    font-weight: 500;
+    margin-top: 1.6cqw;
+    max-width: 26ch;
+  }
+
+  .poster-ref {
+    font-size: 2.25cqw;
+    margin-top: 1cqw;
+    letter-spacing: 0.15em;
+  }
+
+  .poster-seminarist {
+    font-size: 2.3cqw;
+    padding-top: 4cqw;
+    letter-spacing: 0.08em;
+  }
+
+  .poster-date-main {
+    font-size: 5.6cqw;
+    margin-top: 1.8cqw;
+  }
+
+  .poster-date-sub {
+    font-size: 2.4cqw;
+    margin-top: 0.5cqw;
+    letter-spacing: 0.22em;
+  }
+
+  .poster-church {
+    font-size: 2.5cqw;
+    margin-top: 2.6cqw;
+  }
+
+  .poster-address {
+    font-size: 2.15cqw;
+    margin-top: 0.5cqw;
   }
 }
