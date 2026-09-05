@@ -1,11 +1,11 @@
 <template>
   <div
     class="sorteio-root bg-black text-white"
-    :class="presentation ? 'h-dvh max-h-dvh overflow-hidden' : 'min-h-dvh'"
+    :class="isPalco ? 'h-dvh max-h-dvh overflow-hidden' : 'min-h-dvh'"
   >
-    <!-- Modo apresentação (telão) -->
-    <div v-if="presentation" class="presentation-stage">
-      <button type="button" class="presentation-exit" @click="exitPresentation">
+    <!-- Palco (telão / nova aba) -->
+    <div v-if="isPalco" class="presentation-stage">
+      <button type="button" class="presentation-exit" @click="exitPalco">
         Sair
       </button>
 
@@ -34,41 +34,30 @@
         <div ref="fireworksEl" class="presentation-fireworks" aria-hidden="true" />
 
         <div
-          v-show="countdown == null"
+          v-show="countdown == null && displayNumbers.length"
           class="presentation-numbers"
           :style="numbersLayout"
         >
-          <template v-if="displayNumbers.length">
-            <span
-              v-for="(num, i) in displayNumbers"
-              :key="`${lastRoundN}-${num}-${i}`"
-              class="reveal-number presentation-number"
-              :style="{ fontSize: numberFontSize }"
-            >
-              {{ num }}
-            </span>
-          </template>
-          <span v-else class="presentation-empty">—</span>
+          <span
+            v-for="(num, i) in displayNumbers"
+            :key="`${animRoundN || lastRoundN}-${num}-${i}`"
+            class="reveal-number presentation-number"
+            :style="{ fontSize: numberFontSize }"
+          >
+            {{ num }}
+          </span>
         </div>
       </div>
 
       <footer class="presentation-footer">
         <p class="presentation-round">
-          Rodada {{ lastRoundN || nextRound }}
+          Rodada {{ animRoundN || lastRoundN || nextRound }}
         </p>
-        <button
-          type="button"
-          class="presentation-draw"
-          :disabled="!canDraw || drawing"
-          @click="startDraw"
-        >
-          [ Próximo sorteio ]
-        </button>
         <p v-if="poolWarning" class="presentation-warn">{{ poolWarning }}</p>
       </footer>
     </div>
 
-    <!-- Modo operador -->
+    <!-- Configuração -->
     <div v-else class="mx-auto flex min-h-dvh max-w-4xl flex-col px-8 py-10">
       <header class="mb-10 flex items-center justify-between gap-6">
         <div class="flex min-w-0 items-center gap-3">
@@ -81,13 +70,12 @@
           />
           <div class="min-w-0">
             <h1 class="text-3xl font-bold tracking-tight text-white">Sorteador IBCI</h1>
-            <!-- <p class="mt-1 text-sm text-white/50">Configuração e histórico</p> -->
           </div>
         </div>
         <button
           type="button"
           class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-white/25 px-4 py-2.5 text-sm font-semibold tracking-wide text-white transition hover:border-cj-yellow hover:text-cj-yellow"
-          @click="enterPresentation"
+          @click="openPalcoTab"
         >
           <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <rect x="2" y="5" width="20" height="13" rx="2" />
@@ -97,7 +85,7 @@
         </button>
       </header>
 
-      <!-- Palco -->
+      <!-- Preview do palco -->
       <section class="relative mb-10 overflow-hidden rounded-2xl border border-white/15 bg-black px-6 py-12 text-center">
         <div
           ref="fireworksElOp"
@@ -111,27 +99,29 @@
             class="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/80"
             aria-live="polite"
           >
-            <span class="countdown-digit text-[8rem] leading-none font-black text-white">
+            <span class="countdown-digit text-[8rem] leading-none font-bold text-white">
               {{ countdown }}
             </span>
           </div>
         </Transition>
 
-        <div v-show="countdown == null" class="relative z-0 flex min-h-32 flex-wrap items-center justify-center gap-6">
+        <div
+          v-show="countdown == null"
+          class="relative z-0 flex min-h-32 flex-wrap items-center justify-center gap-6"
+        >
           <template v-if="displayNumbers.length">
             <span
               v-for="(num, i) in displayNumbers"
-              :key="`op-${lastRoundN}-${num}-${i}`"
+              :key="`op-${animRoundN || lastRoundN}-${num}-${i}`"
               class="reveal-number text-7xl font-bold text-white tabular-nums"
             >
               {{ num }}
             </span>
           </template>
-          <span v-else class="text-5xl font-light text-white/30">—</span>
         </div>
 
-        <p v-if="lastRoundN" class="mt-4 text-sm tracking-[0.2em] text-white/60 uppercase">
-          Rodada {{ lastRoundN }}
+        <p v-if="animRoundN || lastRoundN" class="mt-4 text-sm tracking-[0.2em] text-white/60 uppercase">
+          Rodada {{ animRoundN || lastRoundN }}
         </p>
 
         <button
@@ -295,20 +285,26 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 const STORAGE_KEY = 'central-jovem:sorteio'
+const CHANNEL_NAME = 'central-jovem:sorteio-bus'
 const base = import.meta.env.BASE_URL
+
+const isPalco = computed(() => !!route.meta.palco)
 
 const DEFAULT_STATE = () => ({
   settings: {
     min: 1,
     max: 100,
     count: 1,
-    countdownFrom: 3,
+    countdownFrom: 5,
     noRepeat: true,
     soundEnabled: true,
     climaxSound: 'projection',
-    presentation: false,
   },
   rounds: [],
   usedNumbers: [],
@@ -330,7 +326,6 @@ const countdownFrom = ref(5)
 const noRepeat = ref(true)
 const soundEnabled = ref(true)
 const climaxSound = ref('projection')
-const presentation = ref(false)
 const rounds = ref([])
 const usedNumbers = ref([])
 const nextRound = ref(1)
@@ -338,11 +333,13 @@ const nextRound = ref(1)
 const drawing = ref(false)
 const countdown = ref(null)
 const displayNumbers = ref([])
+const animRoundN = ref(0)
 const fireworksEl = ref(null)
 const fireworksElOp = ref(null)
 
 let audioCtx = null
 let drumInterval = null
+let bus = null
 const sampleBuffers = new Map()
 const sampleLoadPromises = new Map()
 
@@ -361,34 +358,25 @@ const lastRoundN = computed(() => {
 
 const numberFontSize = computed(() => {
   const n = Math.max(displayNumbers.value.length, 1)
-  if (presentation.value) {
-    if (n === 1) return 'min(32vh, 28vw)'
-    if (n === 2) return 'min(26vh, 20vw)'
-    if (n === 3) return 'min(20vh, 15vw)'
-    if (n === 4) return 'min(16vh, 12vw)'
-    return 'min(13vh, 9.5vw)'
+  if (isPalco.value) {
+    if (n === 1) return 'min(28vh, 22vw)'
+    if (n === 2) return 'min(22vh, 16vw)'
+    if (n === 3) return 'min(16vh, 12vw)'
+    if (n === 4) return 'min(12vh, 9vw)'
+    return 'min(10vh, 7.5vw)'
   }
-  if (n === 1) return '18vw'
-  if (n === 2) return '12vw'
-  if (n === 3) return '9vw'
-  if (n === 4) return '7vw'
-  return '5.5vw'
+  return '2.25rem'
 })
 
-/** Espalha na largura da tela; gap mínimo evita colisão. */
 const numbersLayout = computed(() => {
   const n = displayNumbers.value.length
   if (n <= 1) {
-    return {
-      width: '100%',
-      justifyContent: 'center',
-      gap: '0',
-    }
+    return { width: '100%', justifyContent: 'center', gap: '0' }
   }
   return {
     width: 'min(94vw, 1680px)',
     justifyContent: 'space-evenly',
-    gap: n === 2 ? '4vw' : n === 3 ? '2.5vw' : '1.5vw',
+    gap: n === 2 ? '3vw' : n === 3 ? '2vw' : '1.2vw',
   }
 })
 
@@ -438,7 +426,6 @@ function snapshot() {
       noRepeat: noRepeat.value,
       soundEnabled: soundEnabled.value,
       climaxSound: climaxSound.value,
-      presentation: presentation.value,
     },
     rounds: rounds.value.map((r) => ({ n: r.n, numbers: [...r.numbers] })),
     usedNumbers: [...usedNumbers.value],
@@ -454,56 +441,67 @@ function persist() {
   }
 }
 
+function applyState(data) {
+  if (!data || typeof data !== 'object') return
+  const s = data.settings || {}
+  min.value = Number.isFinite(s.min) ? s.min : 1
+  max.value = Number.isFinite(s.max) ? s.max : 100
+  count.value = [1, 2, 3, 4, 5].includes(s.count) ? s.count : 1
+  countdownFrom.value =
+    Number.isFinite(s.countdownFrom) && s.countdownFrom >= 1 && s.countdownFrom <= 10
+      ? Math.trunc(s.countdownFrom)
+      : 5
+  noRepeat.value = s.noRepeat !== false
+  soundEnabled.value = s.soundEnabled !== false
+  climaxSound.value = CLIMAX_IDS.includes(s.climaxSound) ? s.climaxSound : 'projection'
+  rounds.value = Array.isArray(data.rounds)
+    ? data.rounds.map((r) => ({ n: r.n, numbers: [...r.numbers] }))
+    : []
+  usedNumbers.value = Array.isArray(data.usedNumbers) ? [...data.usedNumbers] : []
+  nextRound.value = Number.isFinite(data.nextRound) ? data.nextRound : rounds.value.length + 1
+  if (!drawing.value && rounds.value.length) {
+    displayNumbers.value = [...rounds.value[rounds.value.length - 1].numbers]
+  }
+}
+
 function hydrate() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return
-    const data = JSON.parse(raw)
-    if (!data || typeof data !== 'object') return
-    const s = data.settings || {}
-    min.value = Number.isFinite(s.min) ? s.min : 1
-    max.value = Number.isFinite(s.max) ? s.max : 100
-    count.value = [1, 2, 3, 4, 5].includes(s.count) ? s.count : 1
-    countdownFrom.value =
-      Number.isFinite(s.countdownFrom) && s.countdownFrom >= 1 && s.countdownFrom <= 10
-        ? Math.trunc(s.countdownFrom)
-        : 5
-    noRepeat.value = s.noRepeat !== false
-    soundEnabled.value = s.soundEnabled !== false
-    climaxSound.value = CLIMAX_IDS.includes(s.climaxSound) ? s.climaxSound : 'projection'
-    presentation.value = !!s.presentation
-    rounds.value = Array.isArray(data.rounds)
-      ? data.rounds.map((r) => ({ n: r.n, numbers: [...r.numbers] }))
-      : []
-    usedNumbers.value = Array.isArray(data.usedNumbers) ? [...data.usedNumbers] : []
-    nextRound.value = Number.isFinite(data.nextRound) ? data.nextRound : rounds.value.length + 1
-    if (rounds.value.length) {
-      displayNumbers.value = [...rounds.value[rounds.value.length - 1].numbers]
-    }
+    applyState(JSON.parse(raw))
   } catch {
     /* ignore corrupt storage */
   }
 }
 
+function broadcast(msg) {
+  try {
+    bus?.postMessage(msg)
+  } catch {
+    /* ignore */
+  }
+}
+
 function onSettingsChange() {
   persist()
+  broadcast({ type: 'state', state: snapshot() })
 }
 
 function setCount(n) {
   count.value = n
-  persist()
+  onSettingsChange()
 }
 
 function onCountdownChange() {
   let n = Math.trunc(Number(countdownFrom.value))
   if (!Number.isFinite(n)) n = 5
   countdownFrom.value = Math.min(10, Math.max(1, n))
-  persist()
+  onSettingsChange()
 }
 
 function setClimaxSound(id) {
   climaxSound.value = id
-  persist()
+  onSettingsChange()
 }
 
 function previewClimax() {
@@ -511,14 +509,17 @@ function previewClimax() {
   playClimax()
 }
 
-function enterPresentation() {
-  presentation.value = true
-  persist()
+function openPalcoTab() {
+  const url = `${window.location.origin}${base}#/sorteio/palco`
+  window.open(url, 'sorteio-palco')
 }
 
-function exitPresentation() {
-  presentation.value = false
-  persist()
+function exitPalco() {
+  if (window.opener && !window.opener.closed) {
+    window.close()
+    return
+  }
+  router.push({ name: 'sorteio' })
 }
 
 function lockPresentationScroll(locked) {
@@ -526,11 +527,37 @@ function lockPresentationScroll(locked) {
   document.body.style.overflow = locked ? 'hidden' : ''
 }
 
-watch(presentation, (on) => lockPresentationScroll(on), { immediate: true })
+watch(isPalco, (on) => lockPresentationScroll(on), { immediate: true })
 
 function onKeydown(e) {
-  if (e.key === 'Escape' && presentation.value) {
-    exitPresentation()
+  if (e.key === 'Escape' && isPalco.value) {
+    exitPalco()
+  }
+}
+
+function onStorage(e) {
+  if (e.key !== STORAGE_KEY || !e.newValue) return
+  try {
+    applyState(JSON.parse(e.newValue))
+  } catch {
+    /* ignore */
+  }
+}
+
+function onBusMessage(ev) {
+  const msg = ev.data
+  if (!msg || typeof msg !== 'object') return
+  if (msg.type === 'state' && msg.state) {
+    applyState(msg.state)
+    return
+  }
+  if (msg.type === 'startDraw' && isPalco.value && Array.isArray(msg.numbers)) {
+    runDrawAnimation(msg.numbers, msg.roundN)
+  }
+  if (msg.type === 'cleared' && isPalco.value) {
+    displayNumbers.value = []
+    animRoundN.value = 0
+    hydrate()
   }
 }
 
@@ -702,7 +729,7 @@ function spawnBurst(host, originX, originY, particleCount) {
     const p = document.createElement('span')
     p.className = 'fw-particle'
     const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.25
-    const dist = (presentation.value ? 140 : 90) + Math.random() * (presentation.value ? 280 : 160)
+    const dist = (isPalco.value ? 140 : 90) + Math.random() * (isPalco.value ? 280 : 160)
     p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`)
     p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`)
     p.style.background = colors[i % colors.length]
@@ -715,19 +742,19 @@ function spawnBurst(host, originX, originY, particleCount) {
 }
 
 function spawnFireworks() {
-  const host = presentation.value ? fireworksEl.value : fireworksElOp.value
+  const host = isPalco.value ? fireworksEl.value : fireworksElOp.value
   if (!host) return
   host.innerHTML = ''
-  // várias explosões no palco, antes dos números
   spawnBurst(host, '50%', '42%', 56)
   setTimeout(() => spawnBurst(host, '28%', '50%', 36), 120)
   setTimeout(() => spawnBurst(host, '72%', '48%', 36), 200)
   setTimeout(() => spawnBurst(host, '50%', '55%', 40), 320)
 }
 
-async function startDraw() {
-  if (drawing.value || !canDraw.value) return
+async function runDrawAnimation(picked, roundN) {
+  if (drawing.value) return
   drawing.value = true
+  animRoundN.value = roundN
   displayNumbers.value = []
 
   if (soundEnabled.value) {
@@ -736,22 +763,24 @@ async function startDraw() {
   }
 
   const from = Math.min(10, Math.max(1, Math.trunc(Number(countdownFrom.value)) || 5))
-  countdownFrom.value = from
-  const sequence = []
-  for (let n = from; n >= 1; n--) sequence.push(n)
-
-  for (const n of sequence) {
+  for (let n = from; n >= 1; n--) {
     countdown.value = n
     await sleep(800)
   }
   countdown.value = null
-
   stopDrumroll()
+
   playClimax()
   spawnFireworks()
-
-  // clímax visual: fogos primeiro, números depois
+  displayNumbers.value = [...picked]
   await sleep(700)
+
+  drawing.value = false
+  animRoundN.value = 0
+}
+
+async function startDraw() {
+  if (isPalco.value || drawing.value || !canDraw.value) return
 
   const pool = buildPool()
   const picked = cryptoShufflePick(pool, count.value)
@@ -764,8 +793,13 @@ async function startDraw() {
   nextRound.value = roundN + 1
   persist()
 
-  displayNumbers.value = picked
-  drawing.value = false
+  broadcast({
+    type: 'startDraw',
+    numbers: picked,
+    roundN,
+  })
+
+  await runDrawAnimation(picked, roundN)
 }
 
 function clearDraw() {
@@ -777,20 +811,37 @@ function clearDraw() {
   usedNumbers.value = []
   nextRound.value = 1
   displayNumbers.value = []
+  animRoundN.value = 0
   persist()
+  broadcast({ type: 'cleared' })
+  broadcast({ type: 'state', state: snapshot() })
 }
 
 onMounted(() => {
   hydrate()
   window.addEventListener('keydown', onKeydown)
+  window.addEventListener('storage', onStorage)
+  try {
+    bus = new BroadcastChannel(CHANNEL_NAME)
+    bus.onmessage = onBusMessage
+  } catch {
+    bus = null
+  }
   ensureAudio()
   Object.keys(SAMPLE_FILES).forEach((id) => loadSample(id))
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeydown)
+  window.removeEventListener('storage', onStorage)
   lockPresentationScroll(false)
   stopDrumroll()
+  try {
+    bus?.close()
+  } catch {
+    /* ignore */
+  }
+  bus = null
   if (audioCtx) {
     audioCtx.close().catch(() => {})
     audioCtx = null
@@ -999,19 +1050,12 @@ onUnmounted(() => {
   color: #fff;
 }
 
-.presentation-empty {
-  font-family: Outfit, system-ui, sans-serif;
-  font-size: min(18vh, 20vw);
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.3);
-}
-
 .presentation-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.6vh;
-  min-height: 14vh;
+  min-height: 10vh;
   padding-bottom: 1vh;
   justify-content: center;
 }
@@ -1023,29 +1067,6 @@ onUnmounted(() => {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #fff;
-}
-
-.presentation-draw {
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 9999px;
-  padding: 1.2vh 3.5vw;
-  font-size: clamp(1rem, 2.6vh, 1.6rem);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #fff;
-  background: transparent;
-  cursor: pointer;
-}
-
-.presentation-draw:hover:not(:disabled) {
-  border-color: #f5d90a;
-  color: #f5d90a;
-}
-
-.presentation-draw:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .presentation-warn {

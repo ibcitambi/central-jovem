@@ -17,6 +17,12 @@ const router = createRouter({
       component: SorteioView,
       meta: { title: 'Sorteador' },
     },
+    {
+      path: '/sorteio/palco',
+      name: 'sorteio-palco',
+      component: SorteioView,
+      meta: { title: 'Sorteador', palco: true },
+    },
   ],
   scrollBehavior() {
     return { top: 0 }
