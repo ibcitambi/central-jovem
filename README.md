@@ -35,6 +35,19 @@ O `base` do Vite está em `/central-jovem/` ([`vite.config.js`](vite.config.js))
 
 > Não use a branch `main` como origem do Pages — ela tem o código-fonte Vue, não o site compilado.
 
+## Sorteador IBCI (`#/sorteio`)
+
+Página de sorteio ao vivo (telão / datashow), 100% no navegador com `localStorage`.
+
+- Online: `https://ibcitambi.github.io/central-jovem/#/sorteio`
+- Offline (sem internet no culto): no notebook, com o repo e o `npm install` já feitos **antes**:
+
+```bash
+npm run dev
+```
+
+Abra `http://localhost:5173/central-jovem/#/sorteio` e projete essa janela. Não abra como `file://`.
+
 ## Conteúdo atual
 
 Landing do culto **Constantes** (16/08), com 1 Coríntios 15:58 e link da [playlist no YouTube](https://youtube.com/playlist?list=PLUa59kdjq5Hg&si=fzKv_tEZ7BeQzE4H).
